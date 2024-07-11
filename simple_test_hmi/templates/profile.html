@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body {font-family: Arial;}
+
+/* Style the tab */
+.tab {
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background-color: #f1f1f1;
+}
+
+/* Style the buttons inside the tab */
+.tab button {
+  background-color: inherit;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  transition: 0.3s;
+  font-size: 20px;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+  background-color: #ddd;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+  background-color: #ccc;
+}
+
+/* Style the tab content */
+.tabcontent {
+  display: none;
+  padding: 6px 12px;
+  border: 1px solid #ccc;
+  border-top: none;
+}
+
+.logo {
+  position: sticky;
+  top: 0;
+}
+</style>
+
+    <!-- Bootstraps Java Scipts Links -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+
+
+    <!-- JQuery links  -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+
+    <!--High CHART LIVE  -->
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+    <script src="http://code.highcharts.com/highcharts-more.js"></script>
+    <script src="http://code.highcharts.com/modules/exporting.js"></script>
+
+    <!--Gauge  -->
+    <script type="text/javascript" src="http://pubnub.github.io/eon/lib/eon.js"></script>
+
+</head>
+
+
+<style>
+
+    .jumbotron{
+        widows: 150px;
+        height: 220px;
+        justify-content: center;
+    }
+
+    .row{
+        justify-content: center;
+    }
+
+
+</style>
+
+<script>
+class Image{
+
+    constructor(imgUrl, size)
+    {
+        this.imgUrl=imgUrl;
+        this.size=size;
+    }
+
+    backgroundImage()
+    {
+        console.log("inside function ")
+        // Select the Image
+        var img = document.querySelector(".jumbotron");
+
+        // create Css Text
+        var text = "margin:auto;"+
+            "background-image: url("+this.imgUrl+");" +
+            "background-size:cover;"+
+            "opacity:1;"+
+            "background-blend-mode: darken;"+
+            "height: "+ this.size + "vh;";
+
+        img.style.cssText =  text;
+    }
+
+    centerTitle()
+    {
+        /*
+            Center the Title
+         */
+        var t1 = document.querySelector("#title");
+        t1.classList.add("text-white");
+        t1.classList.add("text-center");
+        t1.classList.add("display-3");
+    }
+}
+
+const size = "50";
+
+</script>
+
+  <img class="logo" src="static/images/odin-logo.png" alt="logo">
+
+  <div class="column is-4 is-offset-4">
+    <h3 class="title">Welcome, {{ name }}!</h3>
+    <h4>Select the desired use case:</h4>
+    <div class="box">
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="notification is-danger">
+                {{ messages[0] }}
+            </div>
+        {% endif %}
+        {% endwith %}
+        
+        <a href="{{ url_for('show_sensor_data') }}" class="button is-block is-info is-large is-fullwidth">
+        SHOW COAIMED SENSOR DATA
+        </a>
+        </form>
+    </div>
+
+{% endblock %}
