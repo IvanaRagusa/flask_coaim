@@ -1,0 +1,14 @@
+-- Logs begin at Fri 2024-07-12 08:07:03 UTC, end at Mon 2024-07-22 16:12:31 UTC. --
+Jul 22 16:08:00 master systemd[1]: Started Flask Application.
+Jul 22 16:08:00 master start_flask_app.sh[339017]:  * Serving Flask app 'coaimed_db_api'
+Jul 22 16:08:00 master start_flask_app.sh[339017]:  * Debug mode: on
+Jul 22 16:08:00 master start_flask_app.sh[339017]: INFO:werkzeug:WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+Jul 22 16:08:00 master start_flask_app.sh[339017]:  * Running on http://127.0.0.1:5000
+Jul 22 16:08:00 master start_flask_app.sh[339017]: INFO:werkzeug:Press CTRL+C to quit
+Jul 22 16:08:00 master start_flask_app.sh[339017]: INFO:werkzeug: * Restarting with stat
+Jul 22 16:08:00 master start_flask_app.sh[339030]: WARNING:werkzeug: * Debugger is active!
+Jul 22 16:08:00 master start_flask_app.sh[339030]: INFO:werkzeug: * Debugger PIN: 484-878-255
+Jul 22 16:08:16 master start_flask_app.sh[339030]: ERROR:coaimed_db_api:Error adding sensor data: (psycopg2.OperationalError) connection to server at "localhost" (127.0.0.1), port 5342 failed: Connection refused
+Jul 22 16:08:16 master start_flask_app.sh[339030]:         Is the server running on that host and accepting TCP/IP connections?
+Jul 22 16:08:16 master start_flask_app.sh[339030]: (Background on this error at: https://sqlalche.me/e/20/e3q8)
+Jul 22 16:08:16 master start_flask_app.sh[339030]: INFO:werkzeug:127.0.0.1 - - [22/Jul/2024 16:08:16] "POST /sensors HTTP/1.1" 500 -

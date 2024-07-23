@@ -3,92 +3,61 @@
 {% block content %}
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-body {font-family: Arial;}
+body {
+    font-family: Arial;
+    margin: 0;
+    padding: 0;
+}
 
-/* Style the tab */
 .tab {
-  overflow: hidden;
-  border: 1px solid #ccc;
-  background-color: #f1f1f1;
+    overflow: hidden;
+    border: 1px solid #ccc;
+    background-color: #f1f1f1;
 }
 
-/* Style the buttons inside the tab */
 .tab button {
-  background-color: inherit;
-  float: left;
-  border: none;
-  outline: none;
-  cursor: pointer;
-  padding: 14px 16px;
-  transition: 0.3s;
-  font-size: 20px;
+    background-color: inherit;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+    font-size: 20px;
 }
 
-/* Change background color of buttons on hover */
 .tab button:hover {
-  background-color: #ddd;
+    background-color: #ddd;
 }
 
-/* Create an active/current tablink class */
 .tab button.active {
-  background-color: #ccc;
+    background-color: #ccc;
 }
 
-/* Style the tab content */
 .tabcontent {
-  display: none;
-  padding: 6px 12px;
-  border: 1px solid #ccc;
-  border-top: none;
+    display: none;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-top: none;
 }
 
-.topright {
-  position: absolute;
-  top: 8px;
-  right: 16px;
-  font-size: 18px;
+.scrollbox {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.filter-container {
+    margin-bottom: 10px;
+}
+
+.filter-container input,
+.filter-container select {
+    margin-right: 10px;
+    padding: 5px;
 }
 </style>
 
 <img class="logo" src="static/images/odin-logo.png">
-
-<div class="column is-4 is-offset-4">
-    <div class="box">
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <div class="notification is-danger">
-                {{ messages[0] }}
-            </div>
-        {% endif %}
-        {% endwith %}
-        
-        <a href="{{ url_for('profile') }}" class="button is-block is-info is-large is-fullwidth">Back</a>
-    </div>
-</div>
-
-<form method="POST" action="/send_rehabilitation_task">
-    <div class="field">
-        <div class="control">
-            <input class="input is-large" type="text" name="task_type" placeholder="Insert here the rehab task">
-        </div>
-    </div>
-
-    <div class="field">
-        <div class="control">
-            <input class="input is-large" type="text" name="num_rep" placeholder="Insert here the number of repetitions">
-        </div>
-    </div>
-
-    <div class="field">
-        <div class="control">
-            <input class="input is-large" type="text" name="angle_th" placeholder="Insert here the angle threshold">
-        </div>
-    </div>
-    
-    <div class="control">
-        <button class="button is-block is-info is-large is-fullwidth">SEND TASK</button>
-    </div>   
-</form>
 
 <div class="tab">
     <button class="tablinks" onclick="openTab(event, 'SensorsStatus')">Sensors Status</button>
@@ -97,18 +66,32 @@ body {font-family: Arial;}
 
 <div id="SensorsStatus" class="tabcontent">
     <h3>Sensors Status</h3>
-    <ul id="sensors-status-list">
-        <!-- Sensor status data will be populated here -->
-    </ul>
+    <div class="filter-container">
+        <input type="text" id="status-location-filter" placeholder="Filter by Location">
+        <button onclick="fetchSensorsStatusData()">Apply Filter</button>
+    </div>
+    <div class="scrollbox">
+        <ul id="sensors-status-list">
+            <!-- Sensor status data will be populated here -->
+        </ul>
+    </div>
 </div>
 
 <div id="SensorsActivities" class="tabcontent">
     <h3>Sensors Activities</h3>
-    <ul id="sensors-activities-list">
-        <!-- Sensor activities data will be populated here -->
-    </ul>
+    <div class="filter-container">
+        <input type="text" id="activity-user-filter" placeholder="Filter by User ID">
+        <input type="date" id="activity-date-filter">
+        <button onclick="fetchSensorsActivitiesData()">Apply Filter</button>
+    </div>
+    <div class="scrollbox">
+        <ul id="sensors-activities-list">
+            <!-- Sensor activities data will be populated here -->
+        </ul>
+    </div>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 function openTab(evt, tabName) {
     var i, tabcontent, tablinks;
@@ -122,34 +105,54 @@ function openTab(evt, tabName) {
     }
     document.getElementById(tabName).style.display = "block";
     evt.currentTarget.className += " active";
+
+    // Fetch data when tab is opened
+    if (tabName === 'SensorsStatus') {
+        fetchSensorsStatusData();
+    } else if (tabName === 'SensorsActivities') {
+        fetchSensorsActivitiesData();
+    }
 }
 
-// Fetch sensors status data from Flask endpoint
 function fetchSensorsStatusData() {
-    $.get('/sensors_status_data', function(result) {
+    console.log("Fetching sensors status data...");
+    var locationFilter = $("#status-location-filter").val();
+    $.get('/sensors_status_data', { location: locationFilter }, function(result) {
+        console.log("Received sensors status data:", result);
         var list = $("#sensors-status-list");
         list.empty();
         result.forEach(function(item) {
-            list.append('<li>' + JSON.stringify(item) + '</li>');
+            list.append('<li>Sensor ID: ' + item.Sensor_ID + ', Location: ' + item.Location + '</li>');
         });
+    }).fail(function(xhr, status, error) {
+        console.error("Failed to fetch sensors status data:", status, error);
     });
 }
 
-// Fetch sensors activities data from Flask endpoint
 function fetchSensorsActivitiesData() {
-    $.get('/sensors_activities_data', function(result) {
+    console.log("Fetching sensors activities data...");
+    var userFilter = $("#activity-user-filter").val();
+    var dateFilter = $("#activity-date-filter").val();
+    $.get('/sensors_activities_data', { user_id: userFilter, date: dateFilter }, function(result) {
+        console.log("Received sensors activities data:", result);
         var list = $("#sensors-activities-list");
         list.empty();
         result.forEach(function(item) {
-            list.append('<li>' + JSON.stringify(item) + '</li>');
+            list.append('<li>User ID: ' + item.User_ID + ', Exercise Name: ' + item.Exercise_name + '</li>');
         });
+    }).fail(function(xhr, status, error) {
+        console.error("Failed to fetch sensors activities data:", status, error);
     });
 }
 
-// Set interval to fetch data every 5 seconds
-setInterval(fetchSensorsStatusData, 5000);
-setInterval(fetchSensorsActivitiesData, 5000);
+$(document).ready(function() {
+    // Open the SensorsStatus tab by default
+    openTab({ currentTarget: document.querySelector('.tablinks') }, 'SensorsStatus');
+    
+    // Set interval to fetch data every 5 seconds
+    setInterval(fetchSensorsStatusData, 5000);
+    setInterval(fetchSensorsActivitiesData, 5000);
+});
 </script>
 
 {% endblock %}
-

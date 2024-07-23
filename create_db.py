@@ -38,6 +38,7 @@ class SensorsData(Base):
     Sensor_RH = Column(String)
     Sensor_LF = Column(String)
     Sensor_RF = Column(String)
+    data_time = Column(String)
     Message = Column(String)
 
 # Creazione dei database e delle tabelle
